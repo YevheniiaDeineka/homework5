@@ -140,11 +140,11 @@
         // ==================== GAME CONFIGURATION ====================
         const CANVAS_WIDTH = 800;
         const CANVAS_HEIGHT = 600;
-        const PLAYER_WIDTH = 30;
-        const PLAYER_HEIGHT = 30;
+        const PLAYER_WIDTH = 60;
+        const PLAYER_HEIGHT = 60;
         const PLAYER_SPEED = 5;
-        const ALIEN_WIDTH = 30;
-        const ALIEN_HEIGHT = 30;
+        const ALIEN_WIDTH = 60;
+        const ALIEN_HEIGHT = 60;
         const ALIEN_COLS = 10;
         const ALIEN_ROWS = 5;
         const BULLET_WIDTH = 5;
@@ -162,7 +162,7 @@
 
         // ==================== PLAYER CLASS ====================
         class Player {
-            constructor() {
+            constructor(spaceshipImage = null) {
                 this.x = CANVAS_WIDTH / 2 - PLAYER_WIDTH / 2;
                 this.y = CANVAS_HEIGHT - PLAYER_HEIGHT - 10;
                 this.width = PLAYER_WIDTH;
@@ -170,6 +170,7 @@
                 this.speed = PLAYER_SPEED;
                 this.isMovingLeft = false;
                 this.isMovingRight = false;
+                this.spaceshipImage = spaceshipImage;
             }
 
             update() {
@@ -182,19 +183,24 @@
             }
 
             draw(ctx) {
-                // Draw triangle spaceship
-                ctx.fillStyle = '#00ff00';
-                ctx.beginPath();
-                ctx.moveTo(this.x + this.width / 2, this.y);
-                ctx.lineTo(this.x, this.y + this.height);
-                ctx.lineTo(this.x + this.width, this.y + this.height);
-                ctx.closePath();
-                ctx.fill();
+                // Draw spaceship using image if available
+                if (this.spaceshipImage && this.spaceshipImage.complete && this.spaceshipImage.naturalHeight !== 0) {
+                    ctx.drawImage(this.spaceshipImage, this.x, this.y, this.width, this.height);
+                } else {
+                    // Fallback: Draw triangle spaceship
+                    ctx.fillStyle = '#00ff00';
+                    ctx.beginPath();
+                    ctx.moveTo(this.x + this.width / 2, this.y);
+                    ctx.lineTo(this.x, this.y + this.height);
+                    ctx.lineTo(this.x + this.width, this.y + this.height);
+                    ctx.closePath();
+                    ctx.fill();
 
-                // Draw glow effect
-                ctx.strokeStyle = 'rgba(0, 255, 0, 0.5)';
-                ctx.lineWidth = 2;
-                ctx.stroke();
+                    // Draw glow effect
+                    ctx.strokeStyle = 'rgba(0, 255, 0, 0.5)';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                }
             }
 
             shoot() {
@@ -212,30 +218,36 @@
 
         // ==================== ALIEN CLASS ====================
         class Alien {
-            constructor(x, y) {
+            constructor(x, y, alienImage = null) {
                 this.x = x;
                 this.y = y;
                 this.width = ALIEN_WIDTH;
                 this.height = ALIEN_HEIGHT;
                 this.alive = true;
+                this.alienImage = alienImage;
             }
 
             draw(ctx) {
                 if (!this.alive) return;
 
-                // Draw alien as simple rectangle with details
-                ctx.fillStyle = '#ff0000';
-                ctx.fillRect(this.x, this.y, this.width, this.height);
+                // Draw alien using image if available
+                if (this.alienImage && this.alienImage.complete && this.alienImage.naturalHeight !== 0) {
+                    ctx.drawImage(this.alienImage, this.x, this.y, this.width, this.height);
+                } else {
+                    // Fallback: Draw alien as simple rectangle with details
+                    ctx.fillStyle = '#ff0000';
+                    ctx.fillRect(this.x, this.y, this.width, this.height);
 
-                // Draw eyes
-                ctx.fillStyle = '#ffff00';
-                ctx.fillRect(this.x + 5, this.y + 5, 5, 5);
-                ctx.fillRect(this.x + 20, this.y + 5, 5, 5);
+                    // Draw eyes
+                    ctx.fillStyle = '#ffff00';
+                    ctx.fillRect(this.x + 5, this.y + 5, 5, 5);
+                    ctx.fillRect(this.x + 20, this.y + 5, 5, 5);
 
-                // Draw glow effect
-                ctx.strokeStyle = 'rgba(255, 0, 0, 0.7)';
-                ctx.lineWidth = 1;
-                ctx.strokeRect(this.x, this.y, this.width, this.height);
+                    // Draw glow effect
+                    ctx.strokeStyle = 'rgba(255, 0, 0, 0.7)';
+                    ctx.lineWidth = 1;
+                    ctx.strokeRect(this.x, this.y, this.width, this.height);
+                }
             }
 
             isHit(x, y) {
@@ -407,7 +419,16 @@
                 this.canvas = canvas;
                 this.ctx = canvas.getContext('2d');
                 
-                this.player = new Player();
+                // Load sprite images
+                this.spaceshipImage = new Image();
+                this.spaceshipImage.src = 'spaceship.png';
+                this.spaceshipImage.onerror = () => console.warn('spaceship.png failed to load, using fallback graphics');
+                
+                this.alienImage = new Image();
+                this.alienImage.src = 'alien.png';
+                this.alienImage.onerror = () => console.warn('alien.png failed to load, using fallback graphics');
+                
+                this.player = new Player(this.spaceshipImage);
                 this.aliens = [];
                 this.bullets = [];
                 this.particles = [];
@@ -437,7 +458,7 @@
                     for (let col = 0; col < ALIEN_COLS; col++) {
                         const x = startX + col * spacingX;
                         const y = startY + row * spacingY;
-                        this.aliens.push(new Alien(x, y));
+                        this.aliens.push(new Alien(x, y, this.alienImage));
                     }
                 }
             }
@@ -607,7 +628,7 @@
                 gameState.gameOver = false;
                 gameState.playing = true;
                 document.getElementById('gameOverScreen').classList.remove('active');
-                this.player = new Player();
+                this.player = new Player(this.spaceshipImage);
                 this.aliens = [];
                 this.bullets = [];
                 this.particles = [];
