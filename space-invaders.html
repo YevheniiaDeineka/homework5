@@ -140,8 +140,8 @@
         // ==================== GAME CONFIGURATION ====================
         const CANVAS_WIDTH = 800;
         const CANVAS_HEIGHT = 600;
-        const PLAYER_WIDTH = 60;
-        const PLAYER_HEIGHT = 60;
+        const PLAYER_WIDTH = 90;
+        const PLAYER_HEIGHT = 90;
         const PLAYER_SPEED = 5;
         const ALIEN_WIDTH = 60;
         const ALIEN_HEIGHT = 60;
@@ -436,7 +436,7 @@
                 this.audio = new AudioManager();
                 
                 this.aliensDirection = 1;
-                this.alienSpeed = 1;
+                this.alienSpeed = 0.5;
                 this.alienShootCounter = 0;
                 this.alienShootInterval = 60;
                 this.lastPlayerShootTime = 0;
@@ -536,7 +536,7 @@
                 if (changeDirection) {
                     this.aliensDirection *= -1;
                     for (let alien of aliveAliens) {
-                        alien.y += 30;
+                        alien.y += 15;
                     }
                     this.alienSpeed = Math.min(3, 1 + (ALIEN_ROWS * ALIEN_COLS - aliveAliens.length) * 0.05);
                 }
