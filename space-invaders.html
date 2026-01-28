@@ -290,7 +290,7 @@
         <div class="title">КОСМІЧНІ ЗАХИСНИКИ</div>
         <div class="menu-screen" id="menuScreen">
             <div class="astronaut-container">
-                <img id="astronautImage" class="astronaut-image" src="astronaut.png" alt="Astronaut">
+                <img id="astronautImage" class="astronaut-image" src="images/astronaut.png" alt="Astronaut">
             </div>
             <div class="menu-content">
                 <div class="menu-text">Пора боронити неньку!</div>
@@ -305,7 +305,7 @@
         </div>
         <div class="game-over-screen" id="gameOverScreen">
             <div class="sad-astronaut-container">
-                <img id="sadAstronautImage" class="sad-astronaut-image" src="sad_astronaut.png" alt="Sad Astronaut">
+                <img id="sadAstronautImage" class="sad-astronaut-image" src="images/sad_astronaut.png" alt="Sad Astronaut">
             </div>
             <div class="game-over-content">
                 <div class="game-over-title">ГРАВЕЦЬ ПРОГРАВ</div>
@@ -315,7 +315,7 @@
         </div>
         <div class="win-screen" id="winScreen">
             <div class="happy-astronaut-container">
-                <img id="happyAstronautImage" class="happy-astronaut-image" src="happy_astronaut.png" alt="Happy Astronaut">
+                <img id="happyAstronautImage" class="happy-astronaut-image" src="images/happy_astronaut.png" alt="Happy Astronaut">
             </div>
             <div class="win-content">
                 <div class="win-title">ПЕРЕМОГА!</div>
@@ -610,23 +610,23 @@
                 
                 // Load sprite images
                 this.spaceshipImage = new Image();
-                this.spaceshipImage.src = 'spaceship.png';
+                this.spaceshipImage.src = 'images/spaceship.png';
                 this.spaceshipImage.onerror = () => console.warn('spaceship.png failed to load, using fallback graphics');
                 
                 this.alienImage = new Image();
-                this.alienImage.src = 'alien.png';
+                this.alienImage.src = 'images/alien.png';
                 this.alienImage.onerror = () => console.warn('alien.png failed to load, using fallback graphics');
                 
                 this.astronautImage = new Image();
-                this.astronautImage.src = 'astronaut.png';
+                this.astronautImage.src = 'images/astronaut.png';
                 this.astronautImage.onerror = () => console.warn('astronaut.png failed to load');
                 
                 this.sadAstronautImage = new Image();
-                this.sadAstronautImage.src = 'sad_astronaut.png';
+                this.sadAstronautImage.src = 'images/sad_astronaut.png';
                 this.sadAstronautImage.onerror = () => console.warn('sad_astronaut.png failed to load');
                 
                 this.happyAstronautImage = new Image();
-                this.happyAstronautImage.src = 'happy_astronaut.png';
+                this.happyAstronautImage.src = 'images/happy_astronaut.png';
                 this.happyAstronautImage.onerror = () => console.warn('happy_astronaut.png failed to load');
                 
                 this.player = new Player(this.spaceshipImage);
