@@ -1,4 +1,4 @@
-# Домашня робота №5 ![spaceship](spaceship.png)
+# Домашня робота №5 <img src="spaceship.png" alt="spaceship" width="100">
 
 ## Опис проєкту
 
