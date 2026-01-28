@@ -62,35 +62,136 @@
             background-color: rgba(0, 0, 0, 0.9);
             border: 3px solid #ff0000;
             z-index: 100;
-            flex-direction: column;
-            justify-content: center;
+            flex-direction: row;
+            justify-content: space-between;
             align-items: center;
             color: #ff0000;
             text-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
+            padding-left: 10px;
+            padding-right: 60px;
+            gap: 0;
         }
 
         .game-over-screen.active {
             display: flex;
         }
 
+        .sad-astronaut-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            flex-shrink: 0;
+            min-width: 450px;
+        }
+
+        .sad-astronaut-image {
+            width: 420px;
+            height: 420px;
+            object-fit: contain;
+        }
+
+        .game-over-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+        }
+
         .game-over-title {
             font-size: 60px;
             font-weight: bold;
-            margin-bottom: 30px;
+            margin-bottom: 0;
             animation: blink 0.5s infinite;
+            text-align: center;
         }
 
         .game-over-text {
             font-size: 24px;
-            margin-bottom: 20px;
+            margin-bottom: 0;
             color: #ffff00;
+            text-align: center;
         }
 
         .game-over-restart {
             font-size: 20px;
             color: #00ff00;
-            margin-top: 30px;
+            margin-top: 0;
             animation: pulse 1s infinite;
+            text-align: center;
+        }
+
+        .win-screen {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            border: 3px solid #00ff00;
+            z-index: 100;
+            flex-direction: row;
+            justify-content: flex-start;
+            align-items: center;
+            color: #00ff00;
+            text-shadow: 0 0 20px rgba(0, 255, 0, 0.8);
+            padding-left: 10px;
+            padding-right: 10px;
+            gap: 0;
+        }
+
+        .win-screen.active {
+            display: flex;
+        }
+
+        .happy-astronaut-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            flex-shrink: 0;
+            min-width: 350px;
+            margin-right: -50px;
+        }
+
+        .happy-astronaut-image {
+            width: 420px;
+            height: 420px;
+            object-fit: contain;
+        }
+
+        .win-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .win-title {
+            font-size: 60px;
+            font-weight: bold;
+            margin-bottom: 0;
+            animation: blink 0.5s infinite;
+            text-align: center;
+            color: #ffff00;
+        }
+
+        .win-text {
+            font-size: 24px;
+            margin-bottom: 0;
+            color: #00ff00;
+            text-align: center;
+        }
+
+        .win-restart {
+            font-size: 20px;
+            color: #ffff00;
+            margin-top: 0;
+            animation: pulse 1s infinite;
+            text-align: center;
         }
 
         @keyframes blink {
@@ -118,21 +219,109 @@
             text-shadow: 0 0 15px rgba(0, 255, 0, 0.8);
             margin-bottom: 10px;
         }
+
+        .menu-screen {
+            display: flex;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            border: 3px solid #00ff00;
+            z-index: 101;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0;
+            color: #00ff00;
+            text-shadow: 0 0 20px rgba(0, 255, 0, 0.8);
+            padding-left: 10px;
+            padding-right: 60px;
+        }
+
+        .menu-screen.hidden {
+            display: none;
+        }
+
+        .astronaut-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            flex-shrink: 0;
+            min-width: 450px;
+        }
+
+        .astronaut-image {
+            width: 420px;
+            height: 420px;
+            object-fit: contain;
+        }
+
+        .menu-text {
+            font-size: 42px;
+            font-weight: bold;
+            color: #ffff00;
+            text-align: center;
+            animation: pulse 1s infinite;
+            line-height: 1.3;
+        }
+
+        .menu-start {
+            font-size: 22px;
+            color: #00ff00;
+            text-align: center;
+            animation: pulse 1s infinite;
+            width: 100%;
+        }
+
+        .menu-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+        }
     </style>
 </head>
 <body>
     <div class="game-container">
-        <div class="title">SPACE INVADERS</div>
+        <div class="title">КОСМІЧНІ ЗАХИСНИКИ</div>
+        <div class="menu-screen" id="menuScreen">
+            <div class="astronaut-container">
+                <img id="astronautImage" class="astronaut-image" src="astronaut.png" alt="Astronaut">
+            </div>
+            <div class="menu-content">
+                <div class="menu-text">Пора боронити неньку!</div>
+                <div class="menu-start">Натисни SPACE для початку гри</div>
+            </div>
+        </div>
         <canvas id="gameCanvas" width="800" height="600"></canvas>
         <div class="ui-panel">
-            <div class="score-display">SCORE: <span id="score">0</span></div>
-            <div class="lives-display">LIVES: <span id="lives">3</span></div>
-            <div class="highscore-display">HIGH: <span id="highscore">0</span></div>
+            <div class="score-display">ОЧКИ: <span id="score">0</span></div>
+            <div class="lives-display">ЖИТТЯ: <span id="lives">3</span></div>
+            <div class="highscore-display">РЕКОРД: <span id="highscore">0</span></div>
         </div>
         <div class="game-over-screen" id="gameOverScreen">
-            <div class="game-over-title">GAME OVER</div>
-            <div class="game-over-text">Final Score: <span id="finalScore">0</span></div>
-            <div class="game-over-restart">Press ENTER to Restart</div>
+            <div class="sad-astronaut-container">
+                <img id="sadAstronautImage" class="sad-astronaut-image" src="sad_astronaut.png" alt="Sad Astronaut">
+            </div>
+            <div class="game-over-content">
+                <div class="game-over-title">ГРАВЕЦЬ ПРОГРАВ</div>
+                <div class="game-over-text">Остаточний рахунок: <span id="finalScore">0</span></div>
+                <div class="game-over-restart">Натисни ENTER для перезапуску</div>
+            </div>
+        </div>
+        <div class="win-screen" id="winScreen">
+            <div class="happy-astronaut-container">
+                <img id="happyAstronautImage" class="happy-astronaut-image" src="happy_astronaut.png" alt="Happy Astronaut">
+            </div>
+            <div class="win-content">
+                <div class="win-title">ПЕРЕМОГА!</div>
+                <div class="win-text">Потужно!</div>
+                <div class="win-restart">Натисни ENTER для нової гри</div>
+            </div>
         </div>
     </div>
 
@@ -428,6 +617,18 @@
                 this.alienImage.src = 'alien.png';
                 this.alienImage.onerror = () => console.warn('alien.png failed to load, using fallback graphics');
                 
+                this.astronautImage = new Image();
+                this.astronautImage.src = 'astronaut.png';
+                this.astronautImage.onerror = () => console.warn('astronaut.png failed to load');
+                
+                this.sadAstronautImage = new Image();
+                this.sadAstronautImage.src = 'sad_astronaut.png';
+                this.sadAstronautImage.onerror = () => console.warn('sad_astronaut.png failed to load');
+                
+                this.happyAstronautImage = new Image();
+                this.happyAstronautImage.src = 'happy_astronaut.png';
+                this.happyAstronautImage.onerror = () => console.warn('happy_astronaut.png failed to load');
+                
                 this.player = new Player(this.spaceshipImage);
                 this.aliens = [];
                 this.bullets = [];
@@ -436,11 +637,12 @@
                 this.audio = new AudioManager();
                 
                 this.aliensDirection = 1;
-                this.alienSpeed = 0.5;
+                this.alienSpeed = 1;
                 this.alienShootCounter = 0;
                 this.alienShootInterval = 60;
                 this.lastPlayerShootTime = 0;
                 this.shootCooldown = 300; // milliseconds
+                this.waveNumber = 0;
                 
                 this.loadHighScore();
                 this.initAliens();
@@ -473,10 +675,18 @@
                     }
                     if (e.code === 'Space') {
                         e.preventDefault();
-                        this.playerShoot();
+                        if (!gameState.playing && !gameState.gameOver) {
+                            // Start game from menu
+                            gameState.playing = true;
+                            document.getElementById('menuScreen').classList.add('hidden');
+                        } else if (gameState.playing && !gameState.gameOver) {
+                            // Shoot during game
+                            this.playerShoot();
+                        }
                     }
                     if (e.key === 'Enter') {
                         if (gameState.gameOver) {
+                            // Restart from game over or win screen
                             this.restart();
                         }
                     }
@@ -536,7 +746,7 @@
                 if (changeDirection) {
                     this.aliensDirection *= -1;
                     for (let alien of aliveAliens) {
-                        alien.y += 15;
+                        alien.y += 30;
                     }
                     this.alienSpeed = Math.min(3, 1 + (ALIEN_ROWS * ALIEN_COLS - aliveAliens.length) * 0.05);
                 }
@@ -596,7 +806,8 @@
 
                 // Check if all aliens defeated
                 if (this.aliens.every(a => !a.alive)) {
-                    this.startNewWave();
+                    this.endGameVictory();
+                    return;
                 }
 
                 this.updateUI();
@@ -609,6 +820,12 @@
             }
 
             startNewWave() {
+                this.waveNumber++;
+                if (this.waveNumber >= 3) {
+                    // Victory after 3 waves
+                    this.endGameVictory();
+                    return;
+                }
                 gameState.score += 100;
                 this.alienSpeed = 1;
                 this.initAliens();
@@ -622,12 +839,21 @@
                 document.getElementById('finalScore').textContent = gameState.score;
             }
 
+            endGameVictory() {
+                gameState.gameOver = true;
+                gameState.playing = false;
+                this.updateHighScore();
+                document.getElementById('winScreen').classList.add('active');
+            }
+
             restart() {
                 gameState.score = 0;
                 gameState.lives = 3;
                 gameState.gameOver = false;
                 gameState.playing = true;
                 document.getElementById('gameOverScreen').classList.remove('active');
+                document.getElementById('winScreen').classList.remove('active');
+                this.waveNumber = 0;
                 this.player = new Player(this.spaceshipImage);
                 this.aliens = [];
                 this.bullets = [];
@@ -686,6 +912,7 @@
         // ==================== GAME INITIALIZATION ====================
         const canvas = document.getElementById('gameCanvas');
         const game = new Game(canvas);
+        gameState.playing = false;
         game.gameLoop();
     </script>
 </body>
