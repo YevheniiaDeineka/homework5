@@ -283,10 +283,87 @@
             align-items: center;
             gap: 30px;
         }
+
+        .level-buttons-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .level-button {
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: bold;
+            border: 2px solid #00ff00;
+            background-color: transparent;
+            color: #00ff00;
+            cursor: pointer;
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.8);
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+        }
+
+        .level-button:hover:not(:disabled) {
+            background-color: rgba(0, 255, 0, 0.2);
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.8);
+            transform: scale(1.05);
+        }
+
+        .level-button:disabled {
+            color: #666;
+            border-color: #666;
+            cursor: not-allowed;
+            opacity: 0.5;
+            box-shadow: none;
+            text-shadow: none;
+        }
+
+        .level-button.active {
+            background-color: rgba(0, 255, 0, 0.3);
+            box-shadow: 0 0 25px rgba(0, 255, 0, 1);
+        }
+
+        .win-level-buttons-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .win-level-button {
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: bold;
+            border: 2px solid #00ff00;
+            background-color: transparent;
+            color: #00ff00;
+            cursor: pointer;
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.8);
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+        }
+
+        .win-level-button:hover:not(:disabled) {
+            background-color: rgba(0, 255, 0, 0.2);
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.8);
+            transform: scale(1.05);
+        }
+
+        .win-level-button:disabled {
+            color: #666;
+            border-color: #666;
+            cursor: not-allowed;
+            opacity: 0.5;
+            box-shadow: none;
+            text-shadow: none;
+        }
     </style>
 </head>
 <body>
-    <div class="game-container">
+        <div class="game-container">
         <div class="title">КОСМІЧНІ ЗАХИСНИКИ</div>
         <div class="menu-screen" id="menuScreen">
             <div class="astronaut-container">
@@ -294,6 +371,11 @@
             </div>
             <div class="menu-content">
                 <div class="menu-text">Пора боронити неньку!</div>
+                <div class="level-buttons-container">
+                    <button class="level-button active" id="level1Btn" onclick="selectLevel(1)">Рівень 1 (Легкий)</button>
+                    <button class="level-button" id="level2Btn" disabled onclick="selectLevel(2)">Рівень 2 (Середній)</button>
+                    <button class="level-button" id="level3Btn" disabled onclick="selectLevel(3)">Рівень 3 (Важкий)</button>
+                </div>
                 <div class="menu-start">Натисни SPACE для початку гри</div>
             </div>
         </div>
@@ -320,12 +402,134 @@
             <div class="win-content">
                 <div class="win-title">ПЕРЕМОГА!</div>
                 <div class="win-text">Потужно!</div>
+                <div class="win-level-buttons-container" id="winLevelButtons"></div>
                 <div class="win-restart">Натисни ENTER для нової гри</div>
             </div>
         </div>
     </div>
 
     <script>
+        // ==================== LEVEL CONFIGURATION ====================
+        const LEVEL_CONFIG = {
+            1: {
+                name: "Легкий",
+                alienSpeed: 0.5,
+                alienDropSpeed: 20,
+                alienShootInterval: 120,
+                description: "Розпочни з легкого рівня, щоб збагнути гру!"
+            },
+            2: {
+                name: "Середній",
+                alienSpeed: 1,
+                alienDropSpeed: 30,
+                alienShootInterval: 80,
+                description: "Середній рівень для досвідчених гравців!"
+            },
+            3: {
+                name: "Важкий",
+                alienSpeed: 1.5,
+                alienDropSpeed: 40,
+                alienShootInterval: 50,
+                description: "Видатний рівень для найсміливіших захисників!"
+            }
+        };
+
+        let currentLevel = 1;
+        let unlockedLevels = [1]; // Track which levels are unlocked
+
+        function selectLevel(level) {
+            if (unlockedLevels.includes(level)) {
+                currentLevel = level;
+                // Update button styling
+                for (let i = 1; i <= 3; i++) {
+                    const btn = document.getElementById(`level${i}Btn`);
+                    if (i === level) {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
+                    }
+                }
+            }
+        }
+
+        function selectLevel(level) {
+            if (unlockedLevels.includes(level)) {
+                currentLevel = level;
+                // Update button styling
+                for (let i = 1; i <= 3; i++) {
+                    const btn = document.getElementById(`level${i}Btn`);
+                    if (i === level) {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
+                    }
+                }
+            }
+        }
+
+        function selectLevelFromWin(level) {
+            if (unlockedLevels.includes(level)) {
+                currentLevel = level;
+                game.reinitializeWithLevel();
+                gameState.playing = true;
+                gameState.gameOver = false;
+                document.getElementById('winScreen').classList.remove('active');
+            }
+        }
+
+        function unlockNextLevel() {
+            if (currentLevel < 3 && !unlockedLevels.includes(currentLevel + 1)) {
+                unlockedLevels.push(currentLevel + 1);
+                const nextLevelBtn = document.getElementById(`level${currentLevel + 1}Btn`);
+                if (nextLevelBtn) {
+                    nextLevelBtn.disabled = false;
+                }
+                console.log(`Рівень ${currentLevel + 1} розблокований! Усі розблоковані рівні:`, unlockedLevels);
+            }
+        }
+
+        function updateLevelButtons() {
+            // Update menu screen buttons
+            for (let i = 1; i <= 3; i++) {
+                const btn = document.getElementById(`level${i}Btn`);
+                if (unlockedLevels.includes(i)) {
+                    btn.disabled = false;
+                    if (i === currentLevel) {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
+                    }
+                } else {
+                    btn.disabled = true;
+                    btn.classList.remove('active');
+                }
+            }
+            
+            // Generate win screen level buttons
+            const winLevelButtonsContainer = document.getElementById('winLevelButtons');
+            winLevelButtonsContainer.innerHTML = '';
+            for (let i = 1; i <= 3; i++) {
+                const btn = document.createElement('button');
+                btn.className = 'win-level-button';
+                btn.textContent = `Рівень ${i}`;
+                if (unlockedLevels.includes(i)) {
+                    btn.disabled = false;
+                    btn.onclick = () => selectLevelFromWin(i);
+                } else {
+                    btn.disabled = true;
+                }
+                if (i === currentLevel) {
+                    btn.classList.add('active');
+                }
+                winLevelButtonsContainer.appendChild(btn);
+            }
+        }
+
+        function showMainMenu() {
+            document.getElementById('menuScreen').classList.remove('hidden');
+            updateLevelButtons();
+        }
+
         // ==================== GAME CONFIGURATION ====================
         const CANVAS_WIDTH = 800;
         const CANVAS_HEIGHT = 600;
@@ -341,12 +545,17 @@
         const BULLET_SPEED = 7;
         const ALIEN_BULLET_SPEED = 5;
 
+        // Get level-specific configuration
+        function getLevelConfig(level) {
+            return LEVEL_CONFIG[level];
+        }
+
         // ==================== GAME STATE ====================
         let gameState = {
             score: 0,
             lives: 3,
             gameOver: false,
-            playing: true
+            playing: false
         };
 
         // ==================== PLAYER CLASS ====================
@@ -637,9 +846,11 @@
                 this.audio = new AudioManager();
                 
                 this.aliensDirection = 1;
-                this.alienSpeed = 1;
+                this.levelConfig = getLevelConfig(currentLevel);
+                this.alienSpeed = this.levelConfig.alienSpeed;
+                this.alienDropSpeed = this.levelConfig.alienDropSpeed;
+                this.alienShootInterval = this.levelConfig.alienShootInterval;
                 this.alienShootCounter = 0;
-                this.alienShootInterval = 60;
                 this.lastPlayerShootTime = 0;
                 this.shootCooldown = 300; // milliseconds
                 this.waveNumber = 0;
@@ -647,6 +858,22 @@
                 this.loadHighScore();
                 this.initAliens();
                 this.setupControls();
+            }
+
+            reinitializeWithLevel() {
+                // Оновлюємо конфіг рівня коли змінюється поточний рівень
+                this.levelConfig = getLevelConfig(currentLevel);
+                this.alienSpeed = this.levelConfig.alienSpeed;
+                this.alienDropSpeed = this.levelConfig.alienDropSpeed;
+                this.alienShootInterval = this.levelConfig.alienShootInterval;
+                this.aliensDirection = 1;
+                this.waveNumber = 0;
+                this.player = new Player(this.spaceshipImage);
+                this.aliens = [];
+                this.bullets = [];
+                this.particles = [];
+                this.alienShootCounter = 0;
+                this.initAliens();
             }
 
             initAliens() {
@@ -675,10 +902,18 @@
                     }
                     if (e.code === 'Space') {
                         e.preventDefault();
-                        if (!gameState.playing && !gameState.gameOver) {
+                        const menuScreen = document.getElementById('menuScreen');
+                        console.log('SPACE натиснуто!', {
+                            menuHidden: menuScreen.classList.contains('hidden'),
+                            playing: gameState.playing,
+                            gameOver: gameState.gameOver
+                        });
+                        if (!menuScreen.classList.contains('hidden') && !gameState.playing && !gameState.gameOver) {
                             // Start game from menu
+                            console.log('Запуск гри...');
+                            this.reinitializeWithLevel();
                             gameState.playing = true;
-                            document.getElementById('menuScreen').classList.add('hidden');
+                            menuScreen.classList.add('hidden');
                         } else if (gameState.playing && !gameState.gameOver) {
                             // Shoot during game
                             this.playerShoot();
@@ -746,9 +981,9 @@
                 if (changeDirection) {
                     this.aliensDirection *= -1;
                     for (let alien of aliveAliens) {
-                        alien.y += 30;
+                        alien.y += this.alienDropSpeed;
                     }
-                    this.alienSpeed = Math.min(3, 1 + (ALIEN_ROWS * ALIEN_COLS - aliveAliens.length) * 0.05);
+                    this.alienSpeed = Math.min(this.levelConfig.alienSpeed * 2, this.levelConfig.alienSpeed + (ALIEN_ROWS * ALIEN_COLS - aliveAliens.length) * 0.05);
                 }
 
                 // Alien shooting
@@ -822,12 +1057,12 @@
             startNewWave() {
                 this.waveNumber++;
                 if (this.waveNumber >= 3) {
-                    // Victory after 3 waves
+                    // Victory
                     this.endGameVictory();
                     return;
                 }
                 gameState.score += 100;
-                this.alienSpeed = 1;
+                this.alienSpeed = this.levelConfig.alienSpeed;
                 this.initAliens();
             }
 
@@ -843,6 +1078,8 @@
                 gameState.gameOver = true;
                 gameState.playing = false;
                 this.updateHighScore();
+                unlockNextLevel();
+                updateLevelButtons();
                 document.getElementById('winScreen').classList.add('active');
             }
 
@@ -850,18 +1087,11 @@
                 gameState.score = 0;
                 gameState.lives = 3;
                 gameState.gameOver = false;
-                gameState.playing = true;
                 document.getElementById('gameOverScreen').classList.remove('active');
                 document.getElementById('winScreen').classList.remove('active');
+                showMainMenu();
                 this.waveNumber = 0;
-                this.player = new Player(this.spaceshipImage);
-                this.aliens = [];
-                this.bullets = [];
-                this.particles = [];
-                this.aliensDirection = 1;
-                this.alienSpeed = 1;
-                this.initAliens();
-                this.updateUI();
+                gameState.playing = false;
             }
 
             updateUI() {
@@ -912,7 +1142,7 @@
         // ==================== GAME INITIALIZATION ====================
         const canvas = document.getElementById('gameCanvas');
         const game = new Game(canvas);
-        gameState.playing = false;
+        showMainMenu();
         game.gameLoop();
     </script>
 </body>
